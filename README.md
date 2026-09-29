@@ -174,6 +174,80 @@ When an object is reclaimed, its storage can become available for reuse by the r
 | Does `del` or assigning `null` immediately free memory? | No. These remove references; the runtime manages reclamation. |
 | Can ordinary code choose exactly when memory returns to the OS? | Generally no. Do not rely on immediate collection or a drop in process memory. |
 
+## Review Questions and Answers
+
+1. **What is a variable, and what is it used for?**  
+   A variable is a name bound to a value. It lets a program access, update, and pass data.
+
+2. **How does a variable name relate to the value it refers to?**  
+   The name is a binding or reference that lets the program access the value; it is not necessarily a box containing the entire object.
+
+3. **What happens when two variables refer to the same mutable object?**  
+   A change made to that object through either name is visible through the other name.
+
+4. **How does reassigning a variable differ from changing a mutable object?**  
+   Reassigning changes which value a name refers to. Mutating changes the object itself, which can be observed through every reference to it.
+
+5. **What is scope?**  
+   Scope is the part of a program where a particular name can be used.
+
+6. **When do local variable names in a function stop being usable?**  
+   Ordinarily, they stop being usable from outside their local scope when the function returns.
+
+7. **Can an object remain alive after the function that created it returns? How?**  
+   Yes. A returned reference, closure, or another reachable object can continue referring to it.
+
+8. **What is a closure, and how can it keep a local value accessible?**  
+   A closure is a function that retains access to variables from its surrounding scope, even after that scope's function has returned.
+
+9. **What does `const` prevent in JavaScript?**  
+   It prevents reassignment of the `const` binding after initialization.
+
+10. **Does `const` make an object immutable?**  
+	No. The binding cannot be reassigned, but the referenced object's properties can still be changed if the object is mutable.
+
+11. **What is the difference between `let` and `var` in JavaScript scope?**  
+	`let` is block-scoped; `var` is function-scoped, or module/global scoped depending on context.
+
+12. **Which JavaScript engine does Node.js use?**  
+	Node.js uses the V8 JavaScript engine.
+
+13. **How does V8 generally manage objects and dynamically sized data?**  
+	They are generally managed in a garbage-collected heap, though V8 may optimize or represent values differently.
+
+14. **Why should you not assume each variable maps to a specific stack slot or heap allocation?**  
+	Memory representation is an implementation detail, and the runtime may optimize how values are stored.
+
+15. **How does Python assignment associate a name with an object?**  
+	Assignment binds the name to the object; it does not necessarily copy the object.
+
+16. **What happens when two Python names refer to the same list?**  
+	Both names refer to that one list, so modifying it through either name is visible through the other.
+
+17. **How does CPython commonly manage object memory?**  
+	CPython uses its memory manager, which may use pools and arenas for small allocations.
+
+18. **What role does reference counting play in CPython?**  
+	It tracks references to objects and usually reclaims an object when its reference count reaches zero.
+
+19. **What problem does CPython's cyclic garbage collector address?**  
+	It finds certain unreachable groups of objects that refer to one another in cycles.
+
+20. **What does Python's `del` statement do to a name?**  
+	It removes that name's binding. It does not necessarily destroy the object if other references remain.
+
+21. **Does assigning `null` in JavaScript immediately free an object's memory?**  
+	No. It removes that reference; the object may be collected only when it is unreachable, and collection timing is controlled by the runtime.
+
+22. **How does garbage collection determine whether an object can be reclaimed?**  
+	It identifies objects that can no longer be reached from live program references and runtime-held state.
+
+23. **Why might reported process memory not decrease after an object is reclaimed?**  
+	The runtime may retain the freed memory for reuse instead of returning it to the operating system immediately.
+
+24. **Why should programs avoid relying on an exact garbage-collection time?**  
+	The runtime chooses when to collect; the language does not generally guarantee immediate reclamation or a specific memory decrease.
+
 ## Summary
 
 Variables are names bound to values or objects. Scope determines how long a name can be used; whether an object can be reclaimed depends on whether it remains reachable and on the runtime's memory manager. Node.js relies on V8 garbage collection. CPython primarily uses reference counting plus cyclic garbage collection, while other Python implementations may differ. In either language, do not rely on an exact memory cleanup time. Release external resources such as files and network connections explicitly with the appropriate resource-management tools.
