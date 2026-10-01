@@ -601,172 +601,145 @@ main() -> validate() -> calculate() -> save() -> display()
 
 Each function handles one clear responsibility, making the program easier to read, test, and maintain.
 
-### 21. Function Call Flow
+## Function Review Questions and Answers
 
-When a function is called, Python passes its arguments to the parameters, runs the function body, and sends the returned value back to the caller.
+1. **What happens when a function is called?**  
+   Python matches arguments to parameters, executes the function body, and gives the returned value back to the caller.
 
-```python
-def multiply(a, b):
-  return a * b
+   ```python
+   def multiply(a, b):
+       return a * b
 
 
-result = multiply(5, 4)
-print(result)  # 20
-```
+   result = multiply(5, 4)
+   print(result)  # 20
+   ```
 
-The call `multiply(5, 4)` binds `a` to `5` and `b` to `4`. The function calculates `a * b`, returns `20`, and the assignment stores that result in `result`.
+2. **Can a function be assigned to another variable?**  
+   Yes. Functions are objects in Python. Assigning one to another name does not call it; use parentheses to call it.
 
-### 22. Functions Are Objects
+   ```python
+   def greet():
+       print("Hello")
 
-In Python, functions are objects. Assigning a function to another name does not call it; parentheses are needed to call it.
 
-```python
-def greet():
-  print("Hello")
+   say_hello = greet
+   say_hello()
+   ```
 
+3. **What is a higher-order function?**  
+   It is a function that accepts another function as an argument or returns a function.
 
-say_hello = greet  # both names refer to the same function object
-say_hello()        # calls the function and prints Hello
-```
+   ```python
+   def square(value):
+       return value * value
 
-### 23. Passing a Function to Another Function
 
-A function can be passed as an argument to another function. A function that accepts or returns another function is called a higher-order function.
+   def process(function, value):
+       return function(value)
 
-```python
-def square(value):
-  return value * value
 
+   print(process(square, 5))  # 25
+   ```
 
-def process(function, value):
-  return function(value)
+4. **What is a lambda expression?**  
+   A `lambda` creates a small anonymous function with one expression. Use a named `def` function when the logic needs more than a simple expression.
 
+   ```python
+   square = lambda value: value * value
+   print(square(5))  # 25
 
-print(process(square, 5))  # 25
-```
+   numbers = [1, 2, 3, 4]
+   doubled = list(map(lambda number: number * 2, numbers))
+   print(doubled)  # [2, 4, 6, 8]
+   ```
 
-Here, `square` is passed without parentheses, so the function itself is passed rather than its result.
+5. **What is recursion, and what does a recursive function need?**  
+   Recursion is when a function calls itself. It needs a base case to stop and a recursive step that moves toward that case.
 
-### 24. Lambda Expressions
+   ```python
+   def countdown(number):
+       if number <= 0:  # base case
+           return
 
-A `lambda` expression creates a small anonymous function containing one expression. It is often useful for a short operation passed to another function.
+       print(number)
+       countdown(number - 1)
 
-```python
-square = lambda value: value * value
-print(square(5))  # 25
 
-numbers = [1, 2, 3, 4]
-doubled = list(map(lambda number: number * 2, numbers))
-print(doubled)  # [2, 4, 6, 8]
-```
+   countdown(5)  # prints 5 through 1
+   ```
 
-For more involved logic, use a regular `def` function with a descriptive name.
+6. **What is a docstring?**  
+   A docstring is a string at the start of a function body that documents the function. It can be accessed through `__doc__` or shown with `help()`.
 
-### 25. Recursion
+   ```python
+   def add(a, b):
+       """Return the sum of two numbers."""
+       return a + b
 
-Recursion occurs when a function calls itself. A recursive function needs a base case that stops the calls, and a recursive step that makes progress toward that case.
 
-```python
-def countdown(number):
-  if number <= 0:  # base case
-    return
+   print(add.__doc__)
+   ```
 
-  print(number)
-  countdown(number - 1)  # recursive step
+7. **What do type hints do?**  
+   Type hints document intended parameter and return types. Editors and type checkers can use them, but Python does not generally enforce them at runtime.
 
+   ```python
+   def add(a: int, b: int) -> int:
+       return a + b
+   ```
 
-countdown(5)
-```
+8. **How can a function make an electricity-bill calculation reusable?**  
+   Put the calculation in a function that accepts units and returns the bill. These sample rates charge 2 per unit for the first 100 units, 4 for the next 100, 6 for additional units, plus a fixed charge of 100. Actual rates vary by provider.
 
-This prints `5` through `1`. Without a reachable base case, recursion continues until Python raises `RecursionError`.
+   ```python
+   def calculate_bill(units):
+       if units < 0:
+           raise ValueError("Units cannot be negative")
 
-### 26. Function Documentation
+       if units <= 100:
+           energy_charge = units * 2
+       elif units <= 200:
+           energy_charge = 100 * 2 + (units - 100) * 4
+       else:
+           energy_charge = 100 * 2 + 100 * 4 + (units - 200) * 6
 
-A docstring is a string at the beginning of a function body that describes the function. Tools such as `help()` can display it.
+       return energy_charge + 100
 
-```python
-def add(a, b):
-  """Return the sum of two numbers."""
-  return a + b
 
+   print(calculate_bill(150))  # 500
+   ```
 
-print(add.__doc__)
-help(add)
-```
+9. **What makes a function well designed?**  
+   It has a clear purpose, well-defined inputs, and an understandable return value or side effect. Focused functions are easier to read, test, and maintain.
 
-Clear docstrings are especially useful when a function's purpose or expected inputs are not obvious from its name and parameters.
+10. **Why should a program avoid one giant function?**  
+    A function that handles input, validation, calculations, storage, and display is difficult to test and change. Divide the work into focused helpers.
 
-### 27. Type Hints
+    ```python
+    def validate_student(student):
+        return bool(student.get("name")) and bool(student.get("marks"))
 
-Type hints document the kinds of values a function expects and returns. Editors and static type-checking tools can use them, but Python generally does not enforce them automatically at runtime.
 
-```python
-def add(a: int, b: int) -> int:
-  return a + b
+    def calculate_average(marks):
+        return sum(marks) / len(marks)
 
 
-print(add(2, 3))  # 5
-```
+    def display_student(student, average):
+        print("Student:", student["name"])
+        print("Average:", average)
 
-### 28. Practical Example: Electricity Bill
 
-This example uses sample rates: the first 100 units cost 2 per unit, the next 100 cost 4 per unit, units above 200 cost 6 per unit, and a fixed charge of 100 is added. Real tariffs vary by location and provider.
+    def student_system(student):
+        if not validate_student(student):
+            print("Student data is incomplete")
+            return
 
-```python
-def calculate_bill(units):
-  if units < 0:
-    raise ValueError("Units cannot be negative")
+        average = calculate_average(student["marks"])
+        display_student(student, average)
 
-  if units <= 100:
-    energy_charge = units * 2
-  elif units <= 200:
-    energy_charge = 100 * 2 + (units - 100) * 4
-  else:
-    energy_charge = 100 * 2 + 100 * 4 + (units - 200) * 6
 
-  fixed_charge = 100
-  return energy_charge + fixed_charge
+    student_system({"name": "Sanika", "marks": [85, 90, 95]})
+    ```
 
-
-units = int(input("Enter units used: "))
-bill = calculate_bill(units)
-print("Bill:", bill)
-```
-
-Putting the calculation in `calculate_bill()` separates it from input and output. It also makes the calculation easy to reuse and test with different unit values.
-
-### 29. Function Design
-
-A well-designed function usually has a clear purpose, well-defined inputs, and an understandable result or side effect. Keeping each function focused makes it easier to read, test, and maintain.
-
-### 30. Avoid One Giant Function
-
-A function that handles input, validation, calculations, database work, and printing is difficult to test and change. Split the work into smaller functions with clear responsibilities.
-
-```python
-def validate_student(student):
-  return bool(student["name"]) and bool(student["marks"])
-
-
-def calculate_average(marks):
-  return sum(marks) / len(marks)
-
-
-def display_student(student, average):
-  print("Student:", student["name"])
-  print("Average:", average)
-
-
-def student_system(student):
-  if not validate_student(student):
-    print("Student data is incomplete")
-    return
-
-  average = calculate_average(student["marks"])
-  display_student(student, average)
-
-
-student_system({"name": "Sanika", "marks": [85, 90, 95]})
-```
-
-Each helper handles one part of the task. A larger application could add separate functions for collecting input and saving data, keeping those responsibilities out of the calculation and display functions.
+    Each helper handles one responsibility. A larger program can add separate functions for collecting input and saving data.
