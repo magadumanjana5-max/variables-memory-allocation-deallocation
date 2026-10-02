@@ -17,3 +17,8 @@
 # result = add(2, 3)
 # print(result)  # 5
 
+def welcome():
+  print("Welcome to Nighan2 Labs!")
+
+
+welcome()
